@@ -1,31 +1,40 @@
 let mongoose = require('mongoose');
 let User = require('./user');
 
-
 mongoose.connect('mongodb://localhost:27017/authenticator');
 
 let user = new User();
-user.username = 'dle';
-user.email = 'dle4@walmart.com';
+user.username = 'DuyLe';
+user.email = 'dle5@walmart.com';
 user.password = 'test5D';
 
+
+process.on('uncaughtException', function(err) {
+    console.log('uncaughtException: \n\n', err.stack)
+    // IMPORTANT! (optionally, soft exit)
+    process.exit()
+})
+
+process.on('unhandledRejection', (err, rejectedPromise) => {
+    console.log('unhandledRejection: \n\n', err.stack)
+})
 
 async function createUser(u){
     return await u.save();
 };
 
-let promise = createUser(user);
-promise
-    .then(function(user){
-        console.log('user', user);
-        let val = user.validatePassword('test5D1234');
-        val.then( function(matched){
-            console.log('matched', matched);
-        });
-    })
-    .catch(function(err){
-        console.log('err',err);
-    });
+// let promise = createUser(user);
+// promise
+//     .then(function(user){
+//         console.log('user', user);
+//         let val = user.validatePassword('test5D1234');
+//         val.then( function(matched){
+//             console.log('matched', matched);
+//         });
+//     })
+//     .catch(function(err){
+//         console.log('err',err);
+//     });
 
 // user.save(function (err, u) {
 //     console.log('saving');
@@ -105,4 +114,25 @@ promise
 
 // queryAndUser.then( (uu) =>{
 //     console.log('uu', uu);
+// });
+
+// async function getUserByUsername(username){
+//     return await User.findOne( {username: new RegExp('^'+username+'$', "i") } );
+// }
+
+function main(){
+    async () => {
+        let exist = await user.getUserByUsernameOrEmail('duylex', 'dle5@walmart.comx') != null;
+        console.log('exist', exist);
+    }();
+}
+
+main();
+
+
+//  let x = user.getUserByUsername('Duyle');
+// x.then(function( u ){
+//     console.log(u);
+// }).catch(function (e){
+//     console.log('errr',e.stack);
 // });
