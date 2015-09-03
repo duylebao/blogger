@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let nodeify = require('nodeify');
+let crypto = require('crypto');
 
 let UserSchema = mongoose.Schema({
     username: {
@@ -59,5 +60,12 @@ UserSchema.methods.getUserByUsernameOrEmail = async function (username, email){
     };
     return await this.model('User').findOne( query );
 }
+
+
+UserSchema.path('username').validate(function(username, callback) {
+    return this.model('User').findOne( {username: new RegExp('^'+username+'$', "i") } , "username", function (err, user) { 
+        callback(user == null);
+    });
+}, "Username already exist");
 
 module.exports = mongoose.model('User', UserSchema);

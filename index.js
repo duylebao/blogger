@@ -23,18 +23,18 @@ async function createUser(u){
     return await u.save();
 };
 
-// let promise = createUser(user);
-// promise
-//     .then(function(user){
-//         console.log('user', user);
-//         let val = user.validatePassword('test5D1234');
-//         val.then( function(matched){
-//             console.log('matched', matched);
-//         });
-//     })
-//     .catch(function(err){
-//         console.log('err',err);
-//     });
+let promise = createUser(user);
+promise
+    .then(function(user){
+        console.log('user', user);
+        let val = user.validatePassword('test5D1234');
+        val.then( function(matched){
+            console.log('matched', matched);
+        });
+    })
+    .catch(function(err){
+        console.log('err',err);
+    });
 
 // user.save(function (err, u) {
 //     console.log('saving');
@@ -120,14 +120,14 @@ async function createUser(u){
 //     return await User.findOne( {username: new RegExp('^'+username+'$', "i") } );
 // }
 
-function main(){
-    async () => {
-        let exist = await user.getUserByUsernameOrEmail('duylex', 'dle5@walmart.comx') != null;
-        console.log('exist', exist);
-    }();
-}
+// function main(){
+//     async () => {
+//         let exist = await user.getUserByUsernameOrEmail('duylex', 'dle5@walmart.comx') != null;
+//         console.log('exist', exist);
+//     }();
+// }
 
-main();
+// main();
 
 
 //  let x = user.getUserByUsername('Duyle');
