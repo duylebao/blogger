@@ -35,11 +35,11 @@ module.exports = (app) => {
     };
 
     app.get('/profile', isLoggedIn, (req, res) => {
-        res.render('profile.ejs', {user: req.user});
+        res.render('profile.ejs', {user: req.user });
     });
 
     app.get('/logout', function(req, res){
-       req.logout();
+       req.logOut();
        res.redirect('/');
     });
 };

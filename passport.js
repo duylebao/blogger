@@ -9,11 +9,6 @@ require('songbird');
 const SALT = 'salt';
 
 module.exports = (app) => {
-    // Use the passport middleware to enable passport
-    app.use(passport.initialize());
-
-    // Enable passport persistent sessions
-    app.use(passport.session());
     passport.serializeUser(nodeifyit(async (user) => user._id));
 
     passport.deserializeUser(nodeifyit(async (id) => {
@@ -22,16 +17,18 @@ module.exports = (app) => {
 
     // login strategy
     passport.use(new LocalStrategy({
-        // Use "email" field instead of "username"
         usernameField: 'username'
     }, nodeifyit(async (username, password) => {
         let user = new User();
+        let msg = 'Invalid username or password';
         user = await user.getUserByUsernameOrEmail(username, username);
-
+        if (!user){
+            return [false, {message: msg}]
+        }
         let hash = (await crypto.promise.pbkdf2(password, SALT, 4096, 512, 'sha256')).toString('hex');
         if (hash != user.password) {
-           return [false, {message: 'Invalid password'}]
-        }
+           return [false, {message: msg}]
+        }       
         return user;
     }, {spread: true})));
 
@@ -41,8 +38,8 @@ module.exports = (app) => {
        usernameField: 'username',
        passReqToCallback: true
     }, nodeifyit(async (req, username, password) => {
-        email = (email || '').toLowerCase()
-        let email = req.body.email;
+        let {email, blogname, blogdesc} = req.body;
+        email = (email || '').toLowerCase();
         let user = new User();
         if (await user.getUserByUsernameOrEmail(username, email)) {
             return [false, {message: 'That email or username is already taken.'}];
@@ -59,6 +56,8 @@ module.exports = (app) => {
         // create the user
         user.email = email;
         user.username = username;
+        user.blogname = blogname;
+        user.blogdesc = blogdesc;
         let hash = (await crypto.promise.pbkdf2(password, SALT, 4096, 512, 'sha256')).toString('hex');
         user.password = hash;
         return await user.save();

@@ -14,6 +14,14 @@ let UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    blogname: {
+        type: String,
+        required: false
+    },
+    blogdesc: {
+        type: String,
+        required: false
     }
 });
 

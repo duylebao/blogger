@@ -5,7 +5,8 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let flash = require('connect-flash');
 let mongoose = require('mongoose');
-let passport = require('./passport');
+let passport = require('passport');
+let passportMiddleware = require('./passport');
 let route = require('./route');
 
 
@@ -45,7 +46,13 @@ app.use(session({
   saveUninitialized: true
 }));
 
-passport(app);
+// Use the passport middleware to enable passport
+app.use(passport.initialize());
+
+// Enable passport persistent sessions
+app.use(passport.session());
+
+passportMiddleware(app);
 route(app);
 
 

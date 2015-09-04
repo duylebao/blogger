@@ -20,6 +20,7 @@
 
     <!-- LOGIN FORM -->
     <form id="loginForm" method="post">
+        <h3>Required</h3>
         <div class="form-group">
             <label>Username</label>
             <input type="text" class="form-control" name="username">
@@ -32,7 +33,16 @@
             <label>Password</label>
             <input type="password" class="form-control" name="password">
         </div>
-
+        </hr>
+        <h3>Optional</h3>
+        <div class="form-group">
+            <label>Blog Name</label>
+            <input type="text" class="form-control" name="blogname">
+        </div>        
+        <div class="form-group">
+            <label>Blog Description</label>
+            <input type="text" class="form-control" name="blogdesc">
+        </div>                
         <button type="submit" class="btn btn-warning btn-lg" name="login" onclick="submitForm('/signup')">Signup</button>
     </form>
 
