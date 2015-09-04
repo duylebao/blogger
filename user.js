@@ -44,7 +44,7 @@ UserSchema.methods.isValidPassword = async function (val){
 }
 
 UserSchema.methods.isAlphaNumeric = async function (val){
-    return /[A-Za-z0-9]/.test(val);
+    return /^[a-zA-Z0-9]+$/.test(val);
 }
 
 UserSchema.methods.getUserByUsername = async function (username){
