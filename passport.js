@@ -12,7 +12,7 @@ module.exports = (app) => {
     passport.serializeUser(nodeifyit(async (user) => user._id));
 
     passport.deserializeUser(nodeifyit(async (id) => {
-        return await User.promise.findOne(id);
+        return await User.promise.findOne({_id : id});
     }));
 
     // login strategy
