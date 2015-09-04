@@ -3,14 +3,11 @@ let morgan = require('morgan');
 let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
 let session = require('express-session');
-let passport = require('passport');
-//let LocalStrategy = require('passport-local').Strategy;
-//let nodeifyit = require('nodeifyit');
-//let crypto = require('crypto');
 let flash = require('connect-flash');
 let mongoose = require('mongoose');
-//let User = require('./user');
+let passport = require('./passport');
 let route = require('./route');
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/demo');
 
@@ -51,12 +48,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Use the passport middleware to enable passport
-app.use(passport.initialize());
-
-// Enable passport persistent sessions
-app.use(passport.session());
-
+passport(app);
 route(app);
 
 
