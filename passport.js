@@ -4,6 +4,8 @@ let crypto = require('crypto');
 let passport = require('passport');
 let User = require('./user');
 
+require('songbird');
+
 const SALT = 'salt';
 
 module.exports = (app) => {
@@ -12,23 +14,20 @@ module.exports = (app) => {
 
     // Enable passport persistent sessions
     app.use(passport.session());
-    passport.serializeUser(nodeifyit(async (user) => user.email));
+    passport.serializeUser(nodeifyit(async (user) => user._id));
 
-    passport.deserializeUser(nodeifyit(async (email) => {
-        return await User.findOne({email}).exec();
+    passport.deserializeUser(nodeifyit(async (id) => {
+        return await User.promise.findOne(id);
     }));
 
     // login strategy
     passport.use(new LocalStrategy({
         // Use "email" field instead of "username"
-        usernameField: 'email'
-    }, nodeifyit(async (email, password) => {
-        email = (email || '').toLowerCase();
-        // get user from db
-        let user = await User.promise.findOne({email});
-        if (email !== user.email) {
-            return [false, {message: 'Invalid username'}];
-        }
+        usernameField: 'username'
+    }, nodeifyit(async (username, password) => {
+        let user = new User();
+        user = await user.getUserByUsernameOrEmail(username, username);
+
         let hash = (await crypto.promise.pbkdf2(password, SALT, 4096, 512, 'sha256')).toString('hex');
         if (hash != user.password) {
            return [false, {message: 'Invalid password'}]

@@ -11,9 +11,6 @@ let route = require('./route');
 
 mongoose.connect('mongodb://127.0.0.1:27017/demo');
 
-// Will allow crypto.promise.pbkdf2(...)
-require('songbird');
-
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT || 8000;
 
