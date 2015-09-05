@@ -99,6 +99,10 @@ module.exports = (app) => {
         return;
     }));
 
+    app.get('/blog/:blogname?', then( async (req, res) => {
+        res.render('blog.ejs', {} );
+    }));
+
     app.get('/logout', function(req, res){
        req.logOut();
        res.redirect('/');
