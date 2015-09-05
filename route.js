@@ -41,9 +41,13 @@ module.exports = (app) => {
         res.redirect('/')
     };
 
-    app.get('/profile', isLoggedIn, (req, res) => {
-        res.render('profile.ejs', {user: req.user });
-    });
+    app.get('/profile', isLoggedIn, then( async(req, res) => {
+        let posts = await Post.promise.find({ userId: req.user._id });
+        res.render('profile.ejs', {
+                                    user: req.user,
+                                    posts: posts
+                                  });
+    }));
 
     app.get('/post/:postId?', then( async (req, res) => {
         let postId = req.params.postId;
@@ -71,33 +75,46 @@ module.exports = (app) => {
 
     app.post('/post/:postId?', then(async (req, res) => {
         let postId = req.params.postId;
+        let post;
+        let date = new Date;
         if (!postId){
-            let post = new Post();
-            let [{title: [title], content: [content]},{image: [file]}] = await new multiparty.Form().promise.parse(req);
-
-            post.title = title;
-            post.content = content;
-            post.image.data = await fs.promise.readFile(file.path);
-            post.image.contentType = file.headers['content-type'];
-
-            await post.save();
-            res.redirect('/blog/' + encodeURI(req.user.blogname));
+            post = new Post();
+            post.created = date;
+        }else{
+            post = await Post.promise.findById(postId);
+        }
+        if (!post){
+            res.send(404, 'Not found');
             return;
-        };
+        }
+
         let [{title: [title], content: [content]},{image: [file]}] = await new multiparty.Form().promise.parse(req);
+
+        post.updated = date;
+        post.title = title;
+        post.content = content;
+        post.image.data = await fs.promise.readFile(file.path);
+        post.image.contentType = file.headers['content-type'];
+        post.userId = req.user._id;
+
+        await post.save();
+        //res.redirect('/blog/' + encodeURI(req.user.blogname));
+        res.redirect('/profile');
+        return;
+    }));
+
+    app.get('/deletepost/:postId?', then(async (req, res) => {
+        let postId = req.params.postId;
         let post = await Post.promise.findById(postId);
         if (!post){
             res.send(404, 'Not found');
             return;
         }
-        post.title = title;
-        post.content = content;
-        post.image.data = await fs.promise.readFile(file.path);
-        post.image.contentType = file.headers['content-type'];
-        await post.save();
-        res.redirect('/blog/' + encodeURI(req.user.blogname));
+
+        await post.remove();
+        res.redirect('/profile');
         return;
-    }));
+    }));   
 
     app.get('/blog/:blogname?', then( async (req, res) => {
         res.render('blog.ejs', {} );

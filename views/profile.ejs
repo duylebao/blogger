@@ -22,21 +22,28 @@
     <% } %>
 
     <div class="row">
-
-        <!-- LOCAL INFORMATION -->
-        <div class="well">
-            <h3><span class="fa fa-laptop"></span> Local</h3>
-
-                <p>
-                    <strong>id</strong>: <%= user._id %><br>
-                    <strong>username</strong>: <%= user.username %><br>
-                    <strong>email</strong>: <%= user.email %><br>
-                    <strong>password</strong>: <%= user.password %><br>
-                    <strong>blog name</strong>: <%= user.blogname %><br>
-                    <strong>blog desc</strong>: <%= user.blogdesc %>
-                </p>
-                
         </div>
+        <% if (posts && posts.length > 0){ %>
+        <table border=2 width="100%">
+            <th>Title</th>
+            <th>Created Date</th>
+            <th>Modified Date</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        <%   for( var i = 0; i < posts.length; i++) { %>
+        <%       var post = posts[i]; %>
+            <tr>
+                <td><span class="fa"><%= post.title %></span></td>
+                <td><span class="fa"><%= post.created%></span></td>
+                <td><span class="fa"><%= post.updated %></span></td>
+                <td><a href="/post/<%=post._id%>" class="btn btn-default btn-sm">Edit</a></td>
+                <td><a href="/deletepost/<%=post._id%>" class="btn btn-default btn-sm">Delete</a></td>
+            </tr>               
+        <%   } %>
+    </table>
+        <% } %>
+
+
 
 </div>
 </body>

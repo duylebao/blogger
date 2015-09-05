@@ -12,6 +12,15 @@ let PostSchema = mongoose.Schema({
     image: {
         data: Buffer,
         contentType: String
+    },
+    created: {
+        type: Date
+    },
+    updated: {
+        type: Date
+    },
+    userId: {
+        type: String
     }
 });
 
