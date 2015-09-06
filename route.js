@@ -44,9 +44,18 @@ module.exports = (app) => {
 
     app.get('/profile', isLoggedIn, then( async(req, res) => {
         let posts = await Post.promise.find({ username: req.user.username });
+        let data = [];
+        let comments = [];
+        for(let i = 0; i < posts.length; i++){
+            let post = posts[i];
+            let blogs = await Blog.promise.find({postId: post._id});
+            comments = comments.concat(blogs);
+            data.push({post: post, blogcount: blogs.length});
+        }
         res.render('profile.ejs', {
                                     user: req.user,
-                                    posts: posts
+                                    posts: data,
+                                    blogs: comments
                                   });
     }));
 
@@ -117,8 +126,19 @@ module.exports = (app) => {
         return;
     }));   
 
-    app.get('/blog', then( async (req, res) => {
-        let posts = await Post.find({});
+    app.get('/blog/:blogId?', then( async (req, res) => {
+        let blogId = req.params.blogId;
+        let posts;
+        if (blogId){
+            let blog = await Blog.promise.findById(blogId);
+            if (!blog){
+                res.send(404, 'Not found');
+                return;
+            }
+            posts = await Post.promise.find({_id: blog.postId});          
+        }else{
+            posts = await Post.promise.find({});
+        };
         let dataUri = new DataUri();
         let imagePosts = [];
         for(let i = 0; i < posts.length; i++){
