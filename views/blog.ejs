@@ -25,6 +25,7 @@
         <%   for( var i = 0; i < posts.length; i++) { %>
         <%       var post = posts[i].post; %>
         <%       var image = posts[i].image; %>
+        <%       var blogs = posts[i].blogs %>
                 <p>
                 <% if (image) { %>
                     <div><img src="<%= image %>" style="height : 200px; width: 200px"/></div>
@@ -33,6 +34,23 @@
                 <p>
                 <div style="background-color:Silver;width:500px;border-bottom:outset 1px black;border-right:outset 1px black;"><%= post.content%></div>
                 <div><apan style="font-size:10px;">Posted by: <strong><%=post.username%></strong> on <%=post.created%></span></div>
+                <br>
+                <%   for( var j = 0; j < blogs.length; j++) { %>
+                <%       var blog = blogs[j] %>
+                    <div style="background-color:#E6E6E6;width:500px;"><%= blog.comment%></div>
+                    <div><apan style="font-size:10px;">Comment by: <strong><%=blog.username%></strong> on <%=blog.created%></span></div>
+                    </br>
+                 <% } %>  
+                <% if (user) { %>
+                    <div>
+                        <form action="/blog" method="post">
+                            <input type="hidden" name="username" value="<%=user.username%>">  
+                            <input type="hidden" name="postId" value="<%=post._id%>">    
+                            <input style="width:500px;" type="text" class="form-control" name="comment">
+                            <button type="submit" name="login" onclick="submitForm('/login')">Post</button>
+                        </form>
+                    </div>
+                <% } %>  
                 </br>
                 </br>          
         <%   } %>

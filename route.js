@@ -4,6 +4,7 @@ let flash = require('connect-flash');
 let multiparty = require('multiparty');
 let then = require('express-then');
 let Post = require('./post');
+let Blog = require('./blog');
 let fs = require('fs');
 let DataUri = require('datauri');
 
@@ -15,24 +16,24 @@ module.exports = (app) => {
         res.render('index.ejs', {});
     });
 
-    app.get('/loginForm', (req, res) => {
+    app.get('/login', (req, res) => {
         res.render('login.ejs', {message: req.flash('error')});
     });
 
-    app.get('/signupForm', (req, res) => {
+    app.get('/signup', (req, res) => {
         res.render('signup.ejs', {message: req.flash('error')});
     });
     // process the login form
     app.post('/login', passport.authenticate('local', {
         successRedirect: '/profile',
-        failureRedirect: '/loginForm',
+        failureRedirect: '/login',
         failureFlash: true
     }));
 
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/profile',
-        failureRedirect: '/signupForm',
+        failureRedirect: '/signup',
         failureFlash: true
     }));
 
@@ -116,19 +117,35 @@ module.exports = (app) => {
         return;
     }));   
 
-    app.get('/blog/:blogname?', then( async (req, res) => {
+    app.get('/blog', then( async (req, res) => {
         let posts = await Post.find({});
         let dataUri = new DataUri();
         let imagePosts = [];
         for(let i = 0; i < posts.length; i++){
             let post = posts[i];
             let image = dataUri.format('.'+post.image.contentType.split('/').pop(), post.image.data);
+            let blogs = await Blog.promise.find({ postId: post._id});
             imagePosts.push({
                 image: `data:${post.image.contentType};base64,${image.base64}`,
-                post: post
+                post: post,
+                blogs: blogs
             });
         }
-        res.render('blog.ejs', { posts: imagePosts} );
+        res.render('blog.ejs', { posts: imagePosts, user: req.user} );
+    }));
+
+    app.post('/blog', isLoggedIn, then( async (req, res) => {
+
+        let {username, postId, comment} = req.body;
+        let blog = new Blog();
+        blog.comment = comment;
+        blog.username = username;
+        blog.postId = postId;
+        blog.created = new Date;
+
+        await blog.save();        
+        res.redirect('/blog');
+        return;
     }));
 
     app.get('/logout', function(req, res){
