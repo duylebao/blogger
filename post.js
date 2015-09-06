@@ -19,7 +19,7 @@ let PostSchema = mongoose.Schema({
     updated: {
         type: Date
     },
-    userId: {
+    username: {
         type: String
     }
 });

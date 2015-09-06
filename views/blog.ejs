@@ -5,23 +5,38 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
-        body         { padding-top:80px; }
+        body         { padding-top:80px; word-wrap:break-word; }
     </style>
 </head>
 <body>
 <div class="container">
-<div class="col-sm-6 col-sm-offset-3">
 
-    <h1><span class="fa fa-sign-in"></span>Blog</h1>
+    <div class="page-header text-center">
+        <h1><span class="fa fa-user"></span>Blog Page</h1>
+    </div>
 
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
 
-    welcome to blog
-    <hr>
-
-</div>
+    <div class="row">
+        </div>
+        <% if (posts && posts.length > 0){ %>
+        <%   for( var i = 0; i < posts.length; i++) { %>
+        <%       var post = posts[i].post; %>
+        <%       var image = posts[i].image; %>
+                <p>
+                <% if (image) { %>
+                    <div><img src="<%= image %>" style="height : 200px; width: 200px"/></div>
+                <% } %>  
+                <h3><%= post.title %></span></h3>
+                <p>
+                <div style="background-color:Silver;width:500px;border-bottom:outset 1px black;border-right:outset 1px black;"><%= post.content%></div>
+                <div><apan style="font-size:10px;">Posted by: <strong><%=post.username%></strong> on <%=post.created%></span></div>
+                </br>
+                </br>          
+        <%   } %>
+        <% } %>
 </div>
 </body>
 </html>

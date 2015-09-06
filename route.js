@@ -42,7 +42,7 @@ module.exports = (app) => {
     };
 
     app.get('/profile', isLoggedIn, then( async(req, res) => {
-        let posts = await Post.promise.find({ userId: req.user._id });
+        let posts = await Post.promise.find({ username: req.user.username });
         res.render('profile.ejs', {
                                     user: req.user,
                                     posts: posts
@@ -95,7 +95,7 @@ module.exports = (app) => {
         post.content = content;
         post.image.data = await fs.promise.readFile(file.path);
         post.image.contentType = file.headers['content-type'];
-        post.userId = req.user._id;
+        post.username = req.user.username;
 
         await post.save();
         //res.redirect('/blog/' + encodeURI(req.user.blogname));
@@ -117,7 +117,18 @@ module.exports = (app) => {
     }));   
 
     app.get('/blog/:blogname?', then( async (req, res) => {
-        res.render('blog.ejs', {} );
+        let posts = await Post.find({});
+        let dataUri = new DataUri();
+        let imagePosts = [];
+        for(let i = 0; i < posts.length; i++){
+            let post = posts[i];
+            let image = dataUri.format('.'+post.image.contentType.split('/').pop(), post.image.data);
+            imagePosts.push({
+                image: `data:${post.image.contentType};base64,${image.base64}`,
+                post: post
+            });
+        }
+        res.render('blog.ejs', { posts: imagePosts} );
     }));
 
     app.get('/logout', function(req, res){
