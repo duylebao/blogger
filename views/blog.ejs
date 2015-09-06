@@ -10,7 +10,6 @@
 </head>
 <body>
 <div class="container">
-
     <div class="page-header text-center">
         <h1><span class="fa fa-user"></span>Blog Page</h1>
     </div>
@@ -18,7 +17,6 @@
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
-
     <div class="row">
         </div>
         <% if (posts && posts.length > 0){ %>
@@ -47,7 +45,7 @@
                             <input type="hidden" name="username" value="<%=user.username%>">  
                             <input type="hidden" name="postId" value="<%=post._id%>">    
                             <input style="width:500px;" type="text" class="form-control" name="comment">
-                            <button type="submit" name="login" onclick="submitForm('/login')">Post</button>
+                            <button type="submit">Post</button>
                         </form>
                     </div>
                 <% } %>  
