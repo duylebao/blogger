@@ -59,7 +59,7 @@ module.exports = (app) => {
                                   });
     }));
 
-    app.get('/post/:postId?', then( async (req, res) => {
+    app.get('/post/:postId?', isLoggedIn, then( async (req, res) => {
         let postId = req.params.postId;
         if (!postId){
             res.render('post.ejs', {
@@ -83,7 +83,7 @@ module.exports = (app) => {
         });
     }));
 
-    app.post('/post/:postId?', then(async (req, res) => {
+    app.post('/post/:postId?', isLoggedIn, then(async (req, res) => {
         let postId = req.params.postId;
         let post;
         let date = new Date;
@@ -103,8 +103,10 @@ module.exports = (app) => {
         post.updated = date;
         post.title = title;
         post.content = content;
-        post.image.data = await fs.promise.readFile(file.path);
-        post.image.contentType = file.headers['content-type'];
+        if (file && file.size > 0){
+            post.image.data = await fs.promise.readFile(file.path);
+            post.image.contentType = file.headers['content-type'];
+        }
         post.username = req.user.username;
 
         await post.save();
@@ -113,7 +115,7 @@ module.exports = (app) => {
         return;
     }));
 
-    app.get('/deletepost/:postId?', then(async (req, res) => {
+    app.get('/deletepost/:postId?', isLoggedIn, then(async (req, res) => {
         let postId = req.params.postId;
         let post = await Post.promise.findById(postId);
         if (!post){
