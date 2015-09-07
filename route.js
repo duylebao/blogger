@@ -17,6 +17,9 @@ module.exports = (app) => {
     });
 
     app.get('/login', (req, res) => {
+        if (req.query.retUrl){
+            req.session.returnTo = req.query.retUrl; 
+        }
         res.render('login.ejs', {message: req.flash('error')});
     });
 
@@ -25,10 +28,17 @@ module.exports = (app) => {
     });
     // process the login form
     app.post('/login', passport.authenticate('local', {
-        successRedirect: '/profile',
         failureRedirect: '/login',
         failureFlash: true
-    }));
+    }), (req, res) => {
+        if (req.session.returnTo){
+            let ret = req.session.returnTo;
+            delete req.session.returnTo;
+            res.redirect(ret);
+        }else{
+            res.redirect('/profile');
+        }
+    });
 
     // process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
@@ -110,7 +120,6 @@ module.exports = (app) => {
         post.username = req.user.username;
 
         await post.save();
-        //res.redirect('/blog/' + encodeURI(req.user.blogname));
         res.redirect('/profile');
         return;
     }));

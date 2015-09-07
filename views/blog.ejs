@@ -13,10 +13,6 @@
     <div class="page-header text-center">
         <h1><span class="fa fa-user"></span>Blog Page</h1>
     </div>
-
-    <% if (typeof message !== 'undefined' && message.length > 0) { %>
-        <div class="alert alert-danger"><%= message %></div>
-    <% } %>
     <div class="row">
         </div>
         <% if (posts && posts.length > 0){ %>
@@ -40,6 +36,9 @@
                     </br>
                  <% } %>  
                 <% if (user) { %>
+                    <% if (typeof message !== 'undefined' && message.length > 0) { %>
+                        <div class="alert alert-danger"><%= message %></div>
+                    <% } %>
                     <div>
                         <form action="/blog" method="post">
                             <input type="hidden" name="username" value="<%=user.username%>">  
@@ -49,7 +48,7 @@
                         </form>
                     </div>
                 <% } else{%>  
-                    <a href="/login">Login and Post</a>
+                    <a href="/login?retUrl=/blog/<%=post._id%>">Login and Post</a>
                 <% }%> 
                 </br>
                 </br>          
