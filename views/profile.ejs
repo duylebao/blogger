@@ -64,7 +64,7 @@
                 <td><span class="fa"><%= blog.username %></span></td>
                 <td><span class="fa"><%= blog.comment.slice(0, 140) %></span></td>
                 <td><span class="fa"><%= blog.created %></span></td>
-                <td><a href="/blog/<%=blog._id%>">Go To Post</a></td>
+                <td><a href="/blog/<%=blog.postId%>">Go To Post</a></td>
             </tr>               
         <%   } %>
     </table>

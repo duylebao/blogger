@@ -128,16 +128,15 @@ module.exports = (app) => {
         return;
     }));   
 
-    app.get('/blog/:blogId?', then( async (req, res) => {
-        let blogId = req.params.blogId;
+    app.get('/blog/:postId?', then( async (req, res) => {
+        let postId = req.params.postId;     
         let posts;
-        if (blogId){
-            let blog = await Blog.promise.findById(blogId);
-            if (!blog){
+        if (postId){
+            posts = await Post.promise.find({_id: postId});    
+            if (!posts){
                 res.send(404, 'Not found');
                 return;
-            }
-            posts = await Post.promise.find({_id: blog.postId});          
+            }      
         }else{
             posts = await Post.promise.find({});
         };
@@ -166,7 +165,7 @@ module.exports = (app) => {
         blog.created = new Date;
 
         await blog.save();        
-        res.redirect('/blog');
+        res.redirect('/blog/'+postId);
         return;
     }));
 
