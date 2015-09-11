@@ -1,4 +1,4 @@
-### This is the Bloggers project
+## Blogger
 
 ```
 The project consists of a REST server, a persistent layer to store ORM: user, blog, and post.
@@ -12,13 +12,24 @@ is logged in.
 
 ```
 
-#### Time spent
+Time spent: `13 hours`
 
-```
- 13 hours
-```
 
-#### Starting the web application server which listens on port 8000
+### Features
+
+#### Required
+
+- [x] User can Signup, Login and Logout with input validation
+- [x] Session and user accounts are persisted in a data store
+- [x] User can create and edit a blog post
+- [x] User can view blog posts with details on their Profile
+- [x] User can view anyone's blog with posts at the specified url
+- [x] User can comments on their blog posts on their Profile
+- [x] Logged In users can comment on any blog post
+- [x] Comments are viewable at the bottom of the associated blog post
+
+
+#### Starting the application
 
 ```
 npm install
@@ -69,5 +80,5 @@ As data gets created, collections of users, posts, and blogs will be created.
 ```
 
 
-#### Demo
+### Walkthrough
 ![](walkthrough.gif)
